@@ -63,24 +63,31 @@ public class KamiDeliveryStrategy implements DeliveryContentStrategy {
             return null;
         }
 
+        String cid = (sId != null) ? sId.replace("@goofish", "") : null;
+
         String[] configIdArr = kamiConfigIds.split(",");
         for (String configIdStr : configIdArr) {
             try {
                 Long configId = Long.parseLong(configIdStr.trim());
                 XianyuKamiItem kamiItem = kamiConfigService.acquireKami(configId, orderId);
                 if (kamiItem != null) {
-                    XianyuKamiUsageRecord usageRecord = new XianyuKamiUsageRecord();
-                    usageRecord.setKamiConfigId(configId);
-                    usageRecord.setKamiItemId(kamiItem.getId());
-                    usageRecord.setXianyuAccountId(accountId);
-                    usageRecord.setXyGoodsId(xyGoodsId);
-                    usageRecord.setOrderId(orderId);
-                    usageRecord.setKamiContent(kamiItem.getKamiContent());
-                    String cid = sId.replace("@goofish", "");
-                    usageRecord.setBuyerUserId(cid);
-                    usageRecord.setBuyerUserName(buyerUserName);
-                    kamiUsageRecordMapper.insert(usageRecord);
-                    log.info("【账号{}】卡密扣减成功: configId={}, itemId={}, orderId={}", accountId, configId, kamiItem.getId(), orderId);
+                    // 记录卡密使用记录（写入失败不影响发货流程）
+                    try {
+                        XianyuKamiUsageRecord usageRecord = new XianyuKamiUsageRecord();
+                        usageRecord.setKamiConfigId(configId);
+                        usageRecord.setKamiItemId(kamiItem.getId());
+                        usageRecord.setXianyuAccountId(accountId);
+                        usageRecord.setXyGoodsId(xyGoodsId);
+                        usageRecord.setOrderId(orderId);
+                        usageRecord.setKamiContent(kamiItem.getKamiContent());
+                        usageRecord.setBuyerUserId(cid);
+                        usageRecord.setBuyerUserName(buyerUserName);
+                        kamiUsageRecordMapper.insert(usageRecord);
+                        log.info("【账号{}】卡密扣减成功: configId={}, itemId={}, orderId={}", accountId, configId, kamiItem.getId(), orderId);
+                    } catch (Exception e) {
+                        log.error("【账号{}】卡密使用记录写入失败(不影响发货): configId={}, itemId={}, orderId={}",
+                                accountId, configId, kamiItem.getId(), orderId, e);
+                    }
 
                     String kamiContent = kamiItem.getKamiContent();
                     if (kamiDeliveryTemplate != null && !kamiDeliveryTemplate.trim().isEmpty()) {

@@ -32,7 +32,7 @@ import java.time.Duration;
 @CrossOrigin(origins = "*")
 public class SystemController {
 
-    @Value("${app.version:1.1.8}")
+    @Value("${app.version:2.0.4}")
     private String currentVersion;
 
     private static final String GITHUB_RELEASE_API = "https://api.github.com/repos/IAMLZY2018/XianYuAssistant/releases/latest";

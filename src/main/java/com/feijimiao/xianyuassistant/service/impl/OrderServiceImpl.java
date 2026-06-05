@@ -454,10 +454,24 @@ public class OrderServiceImpl implements OrderService {
 
         int deliveryMode = deliveryConfig.getDeliveryMode() != null ? deliveryConfig.getDeliveryMode() : 1;
 
+        // 从订单记录中获取 sId 和 buyerUserName，供卡密发货策略使用
+        XianyuGoodsOrder existingOrder = orderMapper.selectByAccountIdAndOrderId(accountId, orderId);
+        String sId = null;
+        String buyerUserName = null;
+        if (existingOrder != null) {
+            sId = existingOrder.getSid();
+            buyerUserName = existingOrder.getBuyerUserName();
+        }
+        if (sId == null || sId.isEmpty()) {
+            sId = orderId; // fallback
+        }
+
         DeliveryContext ctx = DeliveryContext.builder()
                 .accountId(accountId)
                 .xyGoodsId(xyGoodsId)
                 .orderId(orderId)
+                .sId(sId)
+                .buyerUserName(buyerUserName)
                 .deliveryConfig(deliveryConfig)
                 .build();
 
@@ -481,9 +495,8 @@ public class OrderServiceImpl implements OrderService {
         String result = consignDummyDelivery(accountId, orderId, content, imageUrls);
 
         if (result != null) {
-            XianyuGoodsOrder existing = orderMapper.selectByAccountIdAndOrderId(accountId, orderId);
-            if (existing != null) {
-                orderMapper.updateStateAndContent(existing.getId(), 1, content);
+            if (existingOrder != null) {
+                orderMapper.updateStateAndContent(existingOrder.getId(), 1, content);
                 orderMapper.updateConfirmState(accountId, orderId);
                 log.info("【账号{}】凭证发货成功，已更新订单状态: orderId={}", accountId, orderId);
             } else {
