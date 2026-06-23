@@ -14,6 +14,13 @@ export interface AutoDeliveryConfig {
   kamiDeliveryTemplate?: string;
   autoDeliveryImageUrl?: string;
   autoConfirmShipment?: number;
+  thirdPartyBaseUrl?: string;
+  thirdPartyUserId?: string;
+  thirdPartyApiKey?: string;
+  thirdPartyGoodsId?: string;
+  thirdPartySafePrice?: string;
+  thirdPartyAttach?: string;
+  thirdPartyTemplate?: string;
   createTime: string;
   updateTime: string;
 }
@@ -30,6 +37,13 @@ export interface SaveAutoDeliveryConfigReq {
   kamiDeliveryTemplate?: string;
   autoDeliveryImageUrl?: string;
   autoConfirmShipment?: number;
+  thirdPartyBaseUrl?: string;
+  thirdPartyUserId?: string;
+  thirdPartyApiKey?: string;
+  thirdPartyGoodsId?: string;
+  thirdPartySafePrice?: string;
+  thirdPartyAttach?: string;
+  thirdPartyTemplate?: string;
 }
 
 export interface GetAutoDeliveryConfigReq {

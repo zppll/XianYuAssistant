@@ -60,7 +60,42 @@ public class AutoDeliveryConfigRespDTO {
      * 自动确认发货开关：0-关闭，1-开启
      */
     private Integer autoConfirmShipment;
-    
+
+    /**
+     * 三方平台发货：平台接口域名，如 https://demo.kasushou.com
+     */
+    private String thirdPartyBaseUrl;
+
+    /**
+     * 三方平台发货：接口APPID（UserId）
+     */
+    private String thirdPartyUserId;
+
+    /**
+     * 三方平台发货：接口密钥（apikey）
+     */
+    private String thirdPartyApiKey;
+
+    /**
+     * 三方平台发货：三方商品ID或规格编码
+     */
+    private String thirdPartyGoodsId;
+
+    /**
+     * 三方平台发货：安全价格（防止亏本，可空）
+     */
+    private String thirdPartySafePrice;
+
+    /**
+     * 三方平台发货：下单参数attach（JSON字符串，卡密商品可空）
+     */
+    private String thirdPartyAttach;
+
+    /**
+     * 三方平台发货：发货文案模板，使用{content}占位符替换取货内容
+     */
+    private String thirdPartyTemplate;
+
     /**
      * 创建时间
      */

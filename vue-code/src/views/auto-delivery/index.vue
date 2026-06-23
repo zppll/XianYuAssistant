@@ -397,6 +397,14 @@ onMounted(() => {
                 🔑
                 卡密发货
               </button>
+              <button
+                class="ad__tab-btn"
+                :class="{ 'ad__tab-btn--active': configForm.deliveryMode === 4 }"
+                @click="configForm.deliveryMode = 4"
+              >
+                🔗
+                三方平台发货
+              </button>
             </div>
           </div>
 
@@ -485,6 +493,120 @@ onMounted(() => {
               <div class="ad__image-section">
                 <div class="ad__image-section-title">发货图片</div>
                 <div class="ad__image-section-hint">可选，最多3张，买家下单后先发送图片再发送卡密</div>
+                <MultiImageUploader
+                  v-if="selectedAccountId"
+                  :account-id="selectedAccountId"
+                  :max="3"
+                  v-model="configForm.autoDeliveryImageUrl"
+                />
+              </div>
+
+              <div class="ad__save-row">
+                <button
+                  class="btn btn--primary"
+                  :class="{ 'btn--loading': saving }"
+                  :disabled="saving"
+                  @click="saveConfig"
+                >
+                  <IconCheck />
+                  保存配置
+                </button>
+                <span v-if="currentConfig" class="ad__save-time">
+                  更新于 {{ formatTime(currentConfig.updateTime) }}
+                </span>
+              </div>
+            </div>
+          </template>
+
+          <!-- ====== 三方平台发货视图 ====== -->
+          <template v-if="configForm.deliveryMode === 4">
+            <div class="ad__config-section">
+              <div class="ad__config-section-title">三方平台接口配置</div>
+              <div class="ad__image-section-hint" style="margin-bottom: 12px;">
+                买家付款后自动调用卡速售（kasushou）平台下单，取货成功后将内容发送给买家。
+                接口APPID(UserId)与密钥(apikey)请在三方平台「用户中心 → 账户管理 → 接口管理」获取。
+              </div>
+
+              <div style="margin-bottom: 12px;">
+                <div style="font-size: 13px; color: rgba(28,28,30,.55); margin-bottom: 6px;">平台接口域名</div>
+                <input
+                  v-model="configForm.thirdPartyBaseUrl"
+                  class="native-input"
+                  placeholder="例：https://demo.kasushou.com"
+                />
+              </div>
+
+              <div style="display: flex; gap: 12px; margin-bottom: 12px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 220px;">
+                  <div style="font-size: 13px; color: rgba(28,28,30,.55); margin-bottom: 6px;">UserId（接口APPID）</div>
+                  <input
+                    v-model="configForm.thirdPartyUserId"
+                    class="native-input"
+                    placeholder="接口APPID"
+                  />
+                </div>
+                <div style="flex: 1; min-width: 220px;">
+                  <div style="font-size: 13px; color: rgba(28,28,30,.55); margin-bottom: 6px;">apikey（接口密钥）</div>
+                  <input
+                    v-model="configForm.thirdPartyApiKey"
+                    class="native-input"
+                    type="password"
+                    placeholder="接口密钥"
+                  />
+                </div>
+              </div>
+
+              <div style="display: flex; gap: 12px; margin-bottom: 12px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 220px;">
+                  <div style="font-size: 13px; color: rgba(28,28,30,.55); margin-bottom: 6px;">三方商品ID</div>
+                  <input
+                    v-model="configForm.thirdPartyGoodsId"
+                    class="native-input"
+                    placeholder="三方平台的商品ID或规格编码"
+                  />
+                </div>
+                <div style="flex: 1; min-width: 220px;">
+                  <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">
+                    <span style="font-size: 13px; color: rgba(28,28,30,.55);">安全价格</span>
+                    <span class="tag tag--info" style="font-size: 11px;">可选</span>
+                  </div>
+                  <input
+                    v-model="configForm.thirdPartySafePrice"
+                    class="native-input"
+                    placeholder="防止调价亏本，不填则不校验"
+                  />
+                </div>
+              </div>
+
+              <div style="margin-bottom: 12px;">
+                <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">
+                  <span style="font-size: 13px; color: rgba(28,28,30,.55);">下单参数 attach</span>
+                  <span class="tag tag--info" style="font-size: 11px;">可选，JSON</span>
+                </div>
+                <textarea
+                  v-model="configForm.thirdPartyAttach"
+                  class="native-input"
+                  :rows="3"
+                  placeholder='手工/充值类商品需填写，卡密商品留空。JSON格式，键为三方商品下单模板的key，例：{"recharge_account":"账号"}'
+                ></textarea>
+              </div>
+
+              <div style="margin-bottom: 12px;">
+                <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">
+                  <span style="font-size: 13px; color: rgba(28,28,30,.55);">发货文案</span>
+                  <span class="tag tag--info" style="font-size: 11px;">占位符 {content}</span>
+                </div>
+                <textarea
+                  v-model="configForm.thirdPartyTemplate"
+                  class="native-input"
+                  :rows="3"
+                  placeholder="可选，填写后将用取货内容替换{content}发送，不填则直接发送取货内容。例：您购买的内容如下：\n{content}\n请妥善保管"
+                ></textarea>
+              </div>
+
+              <div class="ad__image-section">
+                <div class="ad__image-section-title">发货图片</div>
+                <div class="ad__image-section-hint">可选，最多3张，买家下单后先发送图片再发送取货内容</div>
                 <MultiImageUploader
                   v-if="selectedAccountId"
                   :account-id="selectedAccountId"

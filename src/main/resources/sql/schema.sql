@@ -198,7 +198,7 @@ CREATE TABLE IF NOT EXISTS xianyu_goods_auto_delivery_config (
     xianyu_account_id BIGINT NOT NULL,                -- 闲鱼账号ID
     xianyu_goods_id BIGINT,                           -- 本地闲鱼商品ID
     xy_goods_id VARCHAR(100) NOT NULL,                -- 闲鱼的商品ID
-    delivery_mode TINYINT DEFAULT 1,                  -- 发货模式：1-自动发货，2-卡密发货，3-自定义发货
+    delivery_mode TINYINT DEFAULT 1,                  -- 发货模式：1-自动发货，2-卡密发货，3-自定义发货，4-三方平台发货
     sku_id VARCHAR(32),                              -- SKU ID，NULL表示商品级别配置（无SKU或默认）
     sku_name VARCHAR(200),                            -- SKU名称，如"新号"、"30级"
     auto_delivery_content TEXT,                       -- 自动发货的文本内容
@@ -207,6 +207,13 @@ CREATE TABLE IF NOT EXISTS xianyu_goods_auto_delivery_config (
     auto_delivery_image_url TEXT,                     -- 自动发货图片URL
     auto_confirm_shipment TINYINT DEFAULT 0,          -- 自动确认发货开关：0-关闭，1-开启
     rag_delay_seconds INTEGER DEFAULT 15,             -- 自动回复延时秒数（RAG回复延时）
+    third_party_base_url VARCHAR(255),                -- 三方平台发货：平台接口域名，如 https://demo.kasushou.com
+    third_party_user_id VARCHAR(100),                 -- 三方平台发货：接口APPID（UserId）
+    third_party_api_key VARCHAR(100),                 -- 三方平台发货：接口密钥（apikey）
+    third_party_goods_id VARCHAR(100),                -- 三方平台发货：三方商品ID或规格编码
+    third_party_safe_price VARCHAR(32),               -- 三方平台发货：安全价格（防止亏本，可空）
+    third_party_attach TEXT,                          -- 三方平台发货：下单参数attach（JSON字符串，卡密商品可空）
+    third_party_template TEXT,                        -- 三方平台发货：发货文案模板，使用{content}占位符替换取货内容
     create_time DATETIME DEFAULT (datetime('now', 'localtime')),   -- 创建时间
     update_time DATETIME DEFAULT (datetime('now', 'localtime')),   -- 更新时间
     FOREIGN KEY (xianyu_account_id) REFERENCES xianyu_account(id)

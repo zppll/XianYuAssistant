@@ -50,6 +50,13 @@ public class AutoDeliveryConfigServiceImpl implements AutoDeliveryConfigService 
                 config.setKamiConfigIds(reqDTO.getKamiConfigIds());
                 config.setKamiDeliveryTemplate(reqDTO.getKamiDeliveryTemplate());
                 config.setAutoDeliveryImageUrl(reqDTO.getAutoDeliveryImageUrl());
+                config.setThirdPartyBaseUrl(reqDTO.getThirdPartyBaseUrl());
+                config.setThirdPartyUserId(reqDTO.getThirdPartyUserId());
+                config.setThirdPartyApiKey(reqDTO.getThirdPartyApiKey());
+                config.setThirdPartyGoodsId(reqDTO.getThirdPartyGoodsId());
+                config.setThirdPartySafePrice(reqDTO.getThirdPartySafePrice());
+                config.setThirdPartyAttach(reqDTO.getThirdPartyAttach());
+                config.setThirdPartyTemplate(reqDTO.getThirdPartyTemplate());
                 config.setXianyuGoodsId(reqDTO.getXianyuGoodsId());
                 if (reqDTO.getAutoConfirmShipment() != null) {
                     config.setAutoConfirmShipment(reqDTO.getAutoConfirmShipment());

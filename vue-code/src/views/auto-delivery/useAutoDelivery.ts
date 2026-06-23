@@ -79,7 +79,14 @@ export function useAutoDelivery() {
     kamiConfigIds: '',
     kamiDeliveryTemplate: '',
     autoDeliveryImageUrl: '',
-    autoConfirmShipment: 0
+    autoConfirmShipment: 0,
+    thirdPartyBaseUrl: '',
+    thirdPartyUserId: '',
+    thirdPartyApiKey: '',
+    thirdPartyGoodsId: '',
+    thirdPartySafePrice: '',
+    thirdPartyAttach: '',
+    thirdPartyTemplate: ''
   })
 
   const kamiConfigOptions = ref<KamiConfig[]>([])
@@ -394,6 +401,13 @@ export function useAutoDelivery() {
           configForm.value.kamiConfigIds = response.data.kamiConfigIds || ''
           configForm.value.kamiDeliveryTemplate = response.data.kamiDeliveryTemplate || ''
           configForm.value.autoDeliveryImageUrl = response.data.autoDeliveryImageUrl || ''
+          configForm.value.thirdPartyBaseUrl = response.data.thirdPartyBaseUrl || ''
+          configForm.value.thirdPartyUserId = response.data.thirdPartyUserId || ''
+          configForm.value.thirdPartyApiKey = response.data.thirdPartyApiKey || ''
+          configForm.value.thirdPartyGoodsId = response.data.thirdPartyGoodsId || ''
+          configForm.value.thirdPartySafePrice = response.data.thirdPartySafePrice || ''
+          configForm.value.thirdPartyAttach = response.data.thirdPartyAttach || ''
+          configForm.value.thirdPartyTemplate = response.data.thirdPartyTemplate || ''
           if (response.data.autoConfirmShipment != null) {
             configForm.value.autoConfirmShipment = response.data.autoConfirmShipment
           }
@@ -403,6 +417,13 @@ export function useAutoDelivery() {
           configForm.value.kamiConfigIds = ''
           configForm.value.kamiDeliveryTemplate = ''
           configForm.value.autoDeliveryImageUrl = ''
+          configForm.value.thirdPartyBaseUrl = ''
+          configForm.value.thirdPartyUserId = ''
+          configForm.value.thirdPartyApiKey = ''
+          configForm.value.thirdPartyGoodsId = ''
+          configForm.value.thirdPartySafePrice = ''
+          configForm.value.thirdPartyAttach = ''
+          configForm.value.thirdPartyTemplate = ''
         }
       } else {
         throw new Error(response.msg || '获取配置失败')
@@ -427,6 +448,13 @@ export function useAutoDelivery() {
       showInfo('请绑定卡密配置')
       return
     }
+    if (configForm.value.deliveryMode === 4) {
+      if (!configForm.value.thirdPartyBaseUrl.trim() || !configForm.value.thirdPartyUserId.trim()
+        || !configForm.value.thirdPartyApiKey.trim() || !configForm.value.thirdPartyGoodsId.trim()) {
+        showInfo('请完整填写三方平台接口域名、UserId、apikey 和三方商品ID')
+        return
+      }
+    }
 
     saving.value = true
     try {
@@ -445,7 +473,14 @@ export function useAutoDelivery() {
         kamiConfigIds: configForm.value.kamiConfigIds,
         kamiDeliveryTemplate: configForm.value.kamiDeliveryTemplate.trim(),
         autoDeliveryImageUrl: configForm.value.autoDeliveryImageUrl.trim(),
-        autoConfirmShipment: configForm.value.autoConfirmShipment
+        autoConfirmShipment: configForm.value.autoConfirmShipment,
+        thirdPartyBaseUrl: configForm.value.thirdPartyBaseUrl.trim(),
+        thirdPartyUserId: configForm.value.thirdPartyUserId.trim(),
+        thirdPartyApiKey: configForm.value.thirdPartyApiKey.trim(),
+        thirdPartyGoodsId: configForm.value.thirdPartyGoodsId.trim(),
+        thirdPartySafePrice: configForm.value.thirdPartySafePrice.trim(),
+        thirdPartyAttach: configForm.value.thirdPartyAttach.trim(),
+        thirdPartyTemplate: configForm.value.thirdPartyTemplate.trim()
       }
 
       const response = await saveOrUpdateAutoDeliveryConfig(req)
